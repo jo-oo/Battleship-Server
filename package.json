@@ -1,0 +1,24 @@
+{
+  "name": "battleship-server",
+  "version": "0.1.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "cross-env DEBUG=battleship-server:* nodemon server.js",
+    "debug": "cross-env DEBUG=battleship-server:*,socket.io:client,socket.io:server nodemon --inspect server.js"
+  },
+  "dependencies": {
+    "@socket.io/admin-ui": "^0.2.0",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.1",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.15"
+  }
+}
