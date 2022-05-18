@@ -39,6 +39,7 @@ const handleJoinQueue = function(username, callback) {
     if (currentRoom.players.length === 2) {
         const startingPlayer = currentRoom.players[Math.floor(Math.random()*2)]
         debug(startingPlayer, " should start")
+        // Tell all players in room that game should start
         io.in(currentRoom).emit('game:start', currentRoom.players, startingPlayer)
         waitingPlayers = 0
     }
@@ -47,6 +48,7 @@ const handleJoinQueue = function(username, callback) {
 // Function a player clicked a square 
 const handlePlayerClick = function(index) {
     debug('Player clicked on square', index)
+    // Tell other player in room that opponent clicked on a square
     this.broadcast.to(currentRoom).emit('game:click', index)
 }
 
@@ -58,6 +60,8 @@ module.exports = function(socket, _io) {
 
 	// handle user disconnect
 	socket.on('disconnect', handleDisconnect)
+    // Handle when player wants to join a game
     socket.on('user:join-queue', handleJoinQueue)
+    // Handle when a player clicked on opponent board
     socket.on('game:click', handlePlayerClick)
 }
