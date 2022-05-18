@@ -44,6 +44,7 @@ const handleJoinQueue = function(username, callback) {
     }
 }
 
+// Function a player clicked a square 
 const handlePlayerClick = function(index) {
     debug('Player clicked on square', index)
     this.broadcast.to(currentRoom).emit('game:click', index)
