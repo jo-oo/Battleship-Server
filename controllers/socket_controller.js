@@ -3,6 +3,7 @@ let io = null // socket.io server instance
 
 // Array of socket rooms
 const rooms = []
+let currentRoom = null
 let numberOfRooms = 0
 let waitingPlayers = 0
 
@@ -23,7 +24,7 @@ const handleJoinQueue = function(username, callback) {
     }
 
     // Find current room
-    const currentRoom = rooms[rooms.length - 1]
+    currentRoom = rooms[rooms.length - 1]
 
     // Join socket room
     this.join(currentRoom)
@@ -36,9 +37,16 @@ const handleJoinQueue = function(username, callback) {
 
     // If romm is full, tell sockets in room to start their game
     if (currentRoom.players.length === 2) {
-        io.in(currentRoom).emit('game:start', currentRoom.players)
+        const startingPlayer = currentRoom.players[Math.floor(Math.random()*2)]
+        debug(startingPlayer, " should start")
+        io.in(currentRoom).emit('game:start', currentRoom.players, startingPlayer)
         waitingPlayers = 0
     }
+}
+
+const handlePlayerClick = function(index) {
+    debug('Player clicked on square', index)
+    this.broadcast.to(currentRoom).emit('game:click', index)
 }
 
 module.exports = function(socket, _io) {
@@ -50,5 +58,5 @@ module.exports = function(socket, _io) {
 	// handle user disconnect
 	socket.on('disconnect', handleDisconnect)
     socket.on('user:join-queue', handleJoinQueue)
-
+    socket.on('game:click', handlePlayerClick)
 }
