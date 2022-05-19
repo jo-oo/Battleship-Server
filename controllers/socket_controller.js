@@ -45,11 +45,17 @@ const handleJoinQueue = function(username, callback) {
     }
 }
 
-// Function a player clicked a square 
+// Function for when a player clicked a square 
 const handlePlayerClick = function(index) {
     debug('Player clicked on square', index)
     // Tell other player in room that opponent clicked on a square
     this.broadcast.to(currentRoom).emit('game:click', index)
+}
+
+// Function for when there is a result for if a click was a hit or not
+const handleClickResult = function(result) {
+    // Tell other player in room that opponent clicked on a square
+    this.broadcast.to(currentRoom).emit('game:click-result', result)
 }
 
 module.exports = function(socket, _io) {
@@ -64,4 +70,6 @@ module.exports = function(socket, _io) {
     socket.on('user:join-queue', handleJoinQueue)
     // Handle when a player clicked on opponent board
     socket.on('game:click', handlePlayerClick)
+    // Handle when there is a result for if a click was a hit or not
+    socket.on('game:click-result', handleClickResult)
 }
