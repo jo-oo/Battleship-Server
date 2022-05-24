@@ -53,10 +53,10 @@ const handlePlayerClick = function (index) {
 }
 
 // Function for when there is a result for if a click was a hit or not
-const handleClickResult = function (result, index) {
+const handleClickResult = function (result, index, shipSunk) {
 	// Tell other player in room that opponent clicked on a square
 	debug('this is the result:', result, 'and this is the index:', index)
-	this.broadcast.to(currentRoom).emit('game:click-result', result, index)
+	this.broadcast.to(currentRoom).emit('game:click-result', result, index, shipSunk)
 }
 
 
