@@ -20,6 +20,7 @@ const handleJoinQueue = function (username, callback) {
     rooms.push({
       room_id: numberOfRooms++,
       players: [],
+      nrOfPlayersReady: 0
     });
   }
 
@@ -60,6 +61,14 @@ const handleClickResult = function (result, index, shipSunk, gameOver) {
   this.broadcast.to(currentRoom).emit('game:click-result', result, index, shipSunk, gameOver);
 };
 
+const handlePlayerReady = function () {
+
+  if (++currentRoom.nrOfPlayersReady === 2) {
+    io.in(currentRoom).emit('game:player-ready')
+  }
+
+}
+
 module.exports = function (socket, _io) {
   // save a reference to the socket.io server instance
   io = _io;
@@ -74,4 +83,5 @@ module.exports = function (socket, _io) {
   socket.on('game:click', handlePlayerClick);
   // Handle when there is a result for if a click was a hit or not
   socket.on('game:click-result', handleClickResult);
+  socket.on('game:player-ready', handlePlayerReady)
 };
