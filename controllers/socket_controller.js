@@ -1,6 +1,7 @@
 const debug = require('debug')('battleship-server:socket_controller');
 let io = null; // socket.io server instance
 
+//hejhej
 // Array of socket rooms
 const rooms = [];
 let currentRoom = null;
