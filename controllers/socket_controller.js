@@ -9,6 +9,18 @@ let waitingPlayers = 0;
 
 const handleDisconnect = function () {
   debug(`Client ${this.id} left`);
+
+  // Try to find the room where the disconnected client were in
+  currentRoom = rooms.find( (room) => room.players_id.includes(this.id) )
+
+  // If a room was found and it has exactly one player in it
+  if (currentRoom && currentRoom.players.length === 1) {
+    // Reset waiting queue
+    waitingPlayers = 0
+    // Remove room from array
+    rooms.pop()
+  }
+
 };
 
 // When a user wants to enter queue
@@ -20,6 +32,7 @@ const handleJoinQueue = function (username) {
     rooms.push({
       room_id: numberOfRooms++,
       players: [],
+      players_id: [],
       nrOfPlayersReady: 0
     });
   }
@@ -32,6 +45,8 @@ const handleJoinQueue = function (username) {
 
   // Push playername to player property in the current room
   currentRoom.players.push(username);
+
+  currentRoom.players_id.push(this.id)
 
   // Increase amount of players waiting for game
   waitingPlayers++;
@@ -96,4 +111,3 @@ module.exports = function (socket, _io) {
 };
 
 // Prevent same user-name
-// Handle disconnects while in queue
