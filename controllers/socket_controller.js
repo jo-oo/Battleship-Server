@@ -12,7 +12,7 @@ const handleDisconnect = function () {
 };
 
 // When a user wants to enter queue
-const handleJoinQueue = function (username, callback) {
+const handleJoinQueue = function (username) {
   debug(`Player ${username} wants to join queue`);
 
   // If queue is empty, create a new room
@@ -26,6 +26,8 @@ const handleJoinQueue = function (username, callback) {
 
   // Find current room
   currentRoom = rooms[rooms.length - 1];
+
+  debug(currentRoom.nrOfPlayersReady)
 
   // Join socket room
   this.join(currentRoom);
@@ -41,20 +43,22 @@ const handleJoinQueue = function (username, callback) {
     const startingPlayer = currentRoom.players[Math.floor(Math.random() * 2)];
     debug(startingPlayer, ' should start');
     // Tell all players in room that game should start
-    io.in(currentRoom).emit('game:start', currentRoom.players, startingPlayer);
+    io.in(currentRoom).emit('game:start', currentRoom.room_id, currentRoom.players, startingPlayer);
     waitingPlayers = 0;
   }
 };
 
 // Function for when a player clicked a square
-const handlePlayerClick = function (index) {
+const handlePlayerClick = function (room_id, index) {
+  currentRoom = rooms.find( (room) => room.room_id === room_id )
   debug('Player clicked on square', index);
   // Tell other player in room that opponent clicked on a square
   this.broadcast.to(currentRoom).emit('game:click', index);
 };
 
 // Function for when there is a result for if a click was a hit or not
-const handleClickResult = function (result, index, shipSunk, gameOver) {
+const handleClickResult = function (room_id, result, index, shipSunk, gameOver) {
+  currentRoom = rooms.find( (room) => room.room_id === room_id )
   // Tell other player in room that opponent clicked on a square
   /*  debug('this is the result:', result, 'and this is the index:', index); */
   debug('this is gameOver on server', gameOver);
@@ -62,10 +66,13 @@ const handleClickResult = function (result, index, shipSunk, gameOver) {
 };
 
 // Funtcion for when a player have placed all their ships
-const handlePlayerReady = function () {
-
+const handlePlayerReady = function (room_id) {
+  debug("room id is : ", room_id)
+  currentRoom = rooms.find( (room) => room.room_id === room_id )
+  debug("this room looks like", currentRoom)
   // Inform players in the room if booth have placed their ships
-  if (++currentRoom.nrOfPlayersReady === 2) {
+  currentRoom.nrOfPlayersReady++
+  if (currentRoom.nrOfPlayersReady === 2) {
     io.in(currentRoom).emit('game:player-ready')
   }
 
