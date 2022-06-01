@@ -61,8 +61,10 @@ const handleClickResult = function (result, index, shipSunk, gameOver) {
   this.broadcast.to(currentRoom).emit('game:click-result', result, index, shipSunk, gameOver);
 };
 
+// Funtcion for when a player have placed all their ships
 const handlePlayerReady = function () {
 
+  // Inform players in the room if booth have placed their ships
   if (++currentRoom.nrOfPlayersReady === 2) {
     io.in(currentRoom).emit('game:player-ready')
   }
@@ -83,5 +85,6 @@ module.exports = function (socket, _io) {
   socket.on('game:click', handlePlayerClick);
   // Handle when there is a result for if a click was a hit or not
   socket.on('game:click-result', handleClickResult);
+  // Handle when a player have placed all their ships
   socket.on('game:player-ready', handlePlayerReady)
 };
