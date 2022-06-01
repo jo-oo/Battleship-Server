@@ -27,8 +27,6 @@ const handleJoinQueue = function (username) {
   // Find current room
   currentRoom = rooms[rooms.length - 1];
 
-  debug(currentRoom.nrOfPlayersReady)
-
   // Join socket room
   this.join(currentRoom);
 
@@ -50,6 +48,7 @@ const handleJoinQueue = function (username) {
 
 // Function for when a player clicked a square
 const handlePlayerClick = function (room_id, index) {
+  // Find room that client is in
   currentRoom = rooms.find( (room) => room.room_id === room_id )
   debug('Player clicked on square', index);
   // Tell other player in room that opponent clicked on a square
@@ -58,6 +57,7 @@ const handlePlayerClick = function (room_id, index) {
 
 // Function for when there is a result for if a click was a hit or not
 const handleClickResult = function (room_id, result, index, shipSunk, gameOver) {
+  // Find room that client is in
   currentRoom = rooms.find( (room) => room.room_id === room_id )
   // Tell other player in room that opponent clicked on a square
   /*  debug('this is the result:', result, 'and this is the index:', index); */
@@ -67,12 +67,11 @@ const handleClickResult = function (room_id, result, index, shipSunk, gameOver) 
 
 // Funtcion for when a player have placed all their ships
 const handlePlayerReady = function (room_id) {
-  debug("room id is : ", room_id)
+  // Find room that client is in
   currentRoom = rooms.find( (room) => room.room_id === room_id )
-  debug("this room looks like", currentRoom)
+  
   // Inform players in the room if booth have placed their ships
-  currentRoom.nrOfPlayersReady++
-  if (currentRoom.nrOfPlayersReady === 2) {
+  if (++currentRoom.nrOfPlayersReady === 2) {
     io.in(currentRoom).emit('game:player-ready')
   }
 
@@ -95,3 +94,6 @@ module.exports = function (socket, _io) {
   // Handle when a player have placed all their ships
   socket.on('game:player-ready', handlePlayerReady)
 };
+
+// Prevent same user-name
+// Handle disconnects while in queue
