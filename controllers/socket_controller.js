@@ -24,7 +24,7 @@ const handleDisconnect = function () {
 };
 
 // When a user wants to enter queue
-const handleJoinQueue = function (username) {
+const handleJoinQueue = function (username, callback) {
   debug(`Player ${username} wants to join queue`);
 
   // If queue is empty, create a new room
@@ -39,6 +39,14 @@ const handleJoinQueue = function (username) {
 
   // Find current room
   currentRoom = rooms[rooms.length - 1];
+
+  // If there is already someone in room with given name
+  if (currentRoom.players.find(player => player === username)) {
+    // Call the callback function
+    callback()
+    // Break out of function
+    return
+  }
 
   // Join socket room
   this.join(currentRoom);
