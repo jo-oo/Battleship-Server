@@ -60,4 +60,4 @@ When all of a ships squares is clicked and hit, the ship will sink. When all shi
 
 ## Printscreen
 
-<img src="https://github.com/jo-oo/Battleship-Server/blob/main/src/assets/screenprint2.png" width=100%>
+<img src="https://github.com/jo-oo/battleship-server/blob/main/src/assets/screenprint2.png" width=100%>
