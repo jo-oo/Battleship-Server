@@ -1,5 +1,7 @@
 # Battleship 2 player game using React and Socket.io
 
+This was a group assignment with [Tim Nilsson](https://github.com/Laufox) and [Maria Haara Lundhammar](https://github.com/marialundhammar).
+
 Visit this page to check it out! [https://battleship4ever.netlify.app/](https://battleship4ever.netlify.app/)
 
 Built with React using Socket.io
