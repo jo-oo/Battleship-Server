@@ -14,6 +14,10 @@ If you like to view and run this yourself: In the project directory, you can run
 
 Note that you also need the Battleship-Client. In that project directory, you can run:
 
+### `npm install`
+
+then:
+
 ### `npm start`
 
 Runs the app in the development mode.\
@@ -36,8 +40,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 A Battleship game for two players. 
 A game board of 10*10 squares. 
 4 ships for each player and board consisting of two ships which are two squares long, one ship of 3 squares of length and one ship of four squares of length.  
-Each plyaer takes turn clicking on the opponents board. If there is a hidden ship underneath it, it is a hit.
-When all of a ships squares is clicked and hit, the ship will sink. 
+Each player takes turn clicking on the opponents board. If there is a hidden ship underneath it, it is a hit.
+When all of a ships squares is clicked and hit, the ship will sink. When all ships have sunk, the player wins/loses.
 
 #### Requirement
 
