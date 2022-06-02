@@ -8,7 +8,7 @@ Built with React using Socket.io
 
 ## Available Scripts
 
-If you like to view and run this yourself: In the project directory, you can run:
+If you like to view and run this yourself: First create a .env file with the same info as the .env.example file. Then: In the project directory, you can run:
 
 ### `npm run dev`
 
@@ -56,4 +56,4 @@ When all of a ships squares is clicked and hit, the ship will sink.
 
 ## Printscreen
 
-<img src="https://github.com/jo-oo/Battleship-Server/blob/main/src/assets/screenprint.png" width=100%>
+<img src="https://github.com/jo-oo/Battleship-Server/blob/main/src/assets/screenprint2.png" width=100%>
