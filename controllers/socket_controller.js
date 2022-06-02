@@ -9,6 +9,18 @@ let waitingPlayers = 0;
 
 const handleDisconnect = function () {
   debug(`Client ${this.id} left`);
+
+  // Try to find the room where the disconnected client were in
+  currentRoom = rooms.find( (room) => room.players_id.includes(this.id) )
+
+  // If a room was found and it has exactly one player in it
+  if (currentRoom && currentRoom.players.length === 1) {
+    // Reset waiting queue
+    waitingPlayers = 0
+    // Remove room from array
+    rooms.pop()
+  }
+
 };
 
 // When a user wants to enter queue
@@ -20,6 +32,7 @@ const handleJoinQueue = function (username, callback) {
     rooms.push({
       room_id: numberOfRooms++,
       players: [],
+      players_id: [],
       nrOfPlayersReady: 0
     });
   }
@@ -27,11 +40,21 @@ const handleJoinQueue = function (username, callback) {
   // Find current room
   currentRoom = rooms[rooms.length - 1];
 
+  // If there is already someone in room with given name
+  if (currentRoom.players.find(player => player === username)) {
+    // Call the callback function
+    callback()
+    // Break out of function
+    return
+  }
+
   // Join socket room
   this.join(currentRoom);
 
   // Push playername to player property in the current room
   currentRoom.players.push(username);
+
+  currentRoom.players_id.push(this.id)
 
   // Increase amount of players waiting for game
   waitingPlayers++;
@@ -41,20 +64,24 @@ const handleJoinQueue = function (username, callback) {
     const startingPlayer = currentRoom.players[Math.floor(Math.random() * 2)];
     debug(startingPlayer, ' should start');
     // Tell all players in room that game should start
-    io.in(currentRoom).emit('game:start', currentRoom.players, startingPlayer);
+    io.in(currentRoom).emit('game:start', currentRoom.room_id, currentRoom.players, startingPlayer);
     waitingPlayers = 0;
   }
 };
 
 // Function for when a player clicked a square
-const handlePlayerClick = function (index) {
+const handlePlayerClick = function (room_id, index) {
+  // Find room that client is in
+  currentRoom = rooms.find( (room) => room.room_id === room_id )
   debug('Player clicked on square', index);
   // Tell other player in room that opponent clicked on a square
   this.broadcast.to(currentRoom).emit('game:click', index);
 };
 
 // Function for when there is a result for if a click was a hit or not
-const handleClickResult = function (result, index, shipSunk, gameOver) {
+const handleClickResult = function (room_id, result, index, shipSunk, gameOver) {
+  // Find room that client is in
+  currentRoom = rooms.find( (room) => room.room_id === room_id )
   // Tell other player in room that opponent clicked on a square
   /*  debug('this is the result:', result, 'and this is the index:', index); */
   debug('this is gameOver on server', gameOver);
@@ -62,8 +89,10 @@ const handleClickResult = function (result, index, shipSunk, gameOver) {
 };
 
 // Funtcion for when a player have placed all their ships
-const handlePlayerReady = function () {
-
+const handlePlayerReady = function (room_id) {
+  // Find room that client is in
+  currentRoom = rooms.find( (room) => room.room_id === room_id )
+  
   // Inform players in the room if booth have placed their ships
   if (++currentRoom.nrOfPlayersReady === 2) {
     io.in(currentRoom).emit('game:player-ready')
@@ -88,3 +117,5 @@ module.exports = function (socket, _io) {
   // Handle when a player have placed all their ships
   socket.on('game:player-ready', handlePlayerReady)
 };
+
+// Prevent same user-name
